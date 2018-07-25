@@ -2,6 +2,7 @@
 # Mostly from master_run in rootsellar folder
 recipe_itr = 0
 best_recipe_combo = []
+from flask import session
 from app.user_profile_support.rootseller import rootprofile
 from app.user_profile_support.rootseller import recipes, research
 from app.user_profile_support.rootseller import models
@@ -23,8 +24,7 @@ def get_recipe_list(user_profile_data, user):
     recipe_init = recipes.Recipes(profile_init)
 
     # Check for any recipes to ignore
-    user_profile_data = get_user_ignore_responses(user_profile_data, user)
-    ignore_list = user_profile_data.ignore_list
+    ignore_list = get_user_ignore_responses(user_profile_data, user)
 
     # number of meal preferences
     if 'meals_per_week' not in user_profile_data.keys():
@@ -44,16 +44,16 @@ def get_recipe_list(user_profile_data, user):
     weekly_diet_amount = (GA.user_df[GA.macro_labels] / 3.0) * meals_per_week
     best_recipe_combo, weekly_diet_amount = GA.AMGA(num_generations, meals_per_week, amount_per_population, amount_parents_mating, weekly_diet_amount, ignore_list)
     # user_profile_data['list_keys'] = [best_recipe_combo]
-    user_profile_data.list_keys = best_recipe_combo
+    # user_profile_data.list_keys = best_recipe_combo
     user_profile_data['plan_exists'] = True
     recipe_names = []
     for rec_idx in best_recipe_combo:
         recipe_names.append(recipe_init.recipe_clean[rec_idx]['name'])
-    user_profile_data.recipe_names = recipe_names
+    # user_profile_data.recipe_names = recipe_names
     # user_profile_data['recipe_names'] = [recipe_names]
 
-    # user_meal_plan = pd.DataFrame(data={'recipe_id':best_recipe_combo, 'recipe_name':recipe_names})
-
+    user_meal_plan = pd.DataFrame(data={'recipe_id':best_recipe_combo, 'recipe_name':recipe_names})
+    session['user_meal_plan'] = user_meal_plan.to_json()
     return best_recipe_combo, weekly_diet_amount, user_profile_data
 
 
