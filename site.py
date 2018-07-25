@@ -1,7 +1,10 @@
 import sys
 import os
-from app import app, db
-from app.mode import User, Post
+print('\n'.join(sys.path))
+from app import app
+from app import db
+from flask import requests
+# from app.mode import User, Post
 
 @app.shell_context_processor
 def make_shell_context():
