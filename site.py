@@ -1,9 +1,10 @@
 import sys
 import os
+print("site.py")
 print('\n'.join(sys.path))
 from app import app
 from app import db
-from flask import requests
+# from flask import requests
 # from app.mode import User, Post
 
 @app.shell_context_processor
