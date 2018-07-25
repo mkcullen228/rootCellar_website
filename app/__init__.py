@@ -1,6 +1,8 @@
 print("HERE")
 import sys
 import os
+
+print('\n'.join(sys.path))
 from flask import Flask
 # from config import Config
 from flask_sqlalchemy import SQLAlchemy
