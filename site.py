@@ -1,3 +1,5 @@
+import sys
+import os
 from app import app, db
 from app.mode import User, Post
 
@@ -7,7 +9,7 @@ def make_shell_context():
 
 # if __name__ == '__main__':
 #     app.run()
-# 
+
  if __name__ == '__main__':
      app.debug = True
      port = int(os.environ.get("PORT", 5000))
