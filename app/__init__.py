@@ -7,7 +7,7 @@ from flask_login import LoginManager
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-app = Flask(__name__)
+# app = Flask(__name__)
 # app.config.from_object(Config)
 
 app.config['SECRET_KEY'] = 'you-will-never-guess'
