@@ -1,6 +1,6 @@
-from app import app, db
 from flask import render_template, flash, redirect, url_for, session
 from flask_login import current_user, login_user, logout_user
+from app import app, db
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
 from app.models import User
 from app.user_profile_support.get_user_nutrients import *
