@@ -1,11 +1,11 @@
+from app import app, db
 from flask import render_template, flash, redirect, url_for, session
 from flask_login import current_user, login_user, logout_user
-from app import app, db
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
 from app.models import User
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
-from app.user_profile_support.ingredientSubsitutions import run_master_ingredient_sub, get_recipe_list
+from app.user_profile_support.ingredientSubsitutions import *
 import numpy as np
 
 @app.route('/')
@@ -116,11 +116,10 @@ def recipe_recommendation():
             # if 'list_keys' not in user_profile_data.keys():
             if 'user_meal_plan' not in session.keys():
                 best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
-            user_meal_plan = pd.read_json(session['user_meal_plan'])
+                user_meal_plan = pd.read_json(session['user_meal_plan'])
             best_recipe_combo = user_meal_plan.recipe_id
 
             # Sanity Check the ignore list before returning Results. If a recipe is in ignore list run again
-            # if 'ignore_list' not in session.keys():
             ignore_list = get_user_ignore_responses(user_profile_data, user)
 
             while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
@@ -140,8 +139,6 @@ def subsitute_ingredients():
     if current_user.is_authenticated:
         user = current_user.username
         # Check if user has recipies
-        # TODO: get global user_profile_data if exist instead of overwriting old one
-        #user_profile_data = get_userPreferences(user)
 
         user_profile_data = pd.read_json(session['data'])
         # filter_list
@@ -164,40 +161,19 @@ def subsitute_ingredients():
 def shopping_list():
     if current_user.is_authenticated:
         user = current_user.username
-        # TODO: get global user_profile_data if exist instead of overwriting old one
-        #user_profile_data = get_userPreferences(user)
+
         user_profile_data = pd.read_json(session['data'])
         if user_profile_data is not False:
             # Get Ingredient List to Create a Shopping List
-            ingredient_list = []
+            try:
+                user_meal_plan = pd.read_json(session['user_meal_plan'])
+                best_recipe_combo = user_meal_plan.recipe_id
+                ingredient_list = get_shopping_list(best_recipe_combo, user_profile_data)
+            except:
+                ingredient_list = []
             return render_template('shopping_list.html', ingredient_list=ingredient_list, user_data=user_profile_data)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', title="User Profile",
              user=user)
         return redirect(url_for('index'))
-
-
-# User Prefernece Form
-# @app.route('/user_preferences', methods=['GET', 'POST'])
-# def user_preferences():
-#     if current_user.is_authenticated:
-#         user = current_user.username
-#         gender_list = ['Male', 'Female', 'Prefer Not to Say']
-#         form = UserPreferenceForm()
-#         if form.validate_on_submit():
-#             user_pref = UserPreference(
-#             username=user,
-#             firstname=form.firstname.data,
-#             lastname=form.lastname.data,
-#             gender=form.gender.data,
-#             age=form.age.data,
-#             weight_lb=form.weight_lb.data,
-#             height_in=form.height_in.data,
-#             foods_allergic=form.foods_allergic.data
-#             )
-#             db.session.add(user_pref)
-#             db.session.commit()
-#             # flash('Congratulations, you are now a registered user!')
-#             return redirect('/user_profile_existing')
-#     return render_template('user_preferences.html', user=user, form=form, gender_list=gender_list)

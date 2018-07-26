@@ -1,9 +1,6 @@
-import sys
-import os
-sys.path.append('/app/.heroku/python/lib/python3.6/site-packages')
-# print('\n'.join(sys.path)) # debug path
 from flask import Flask
 # from config import Config
+import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
