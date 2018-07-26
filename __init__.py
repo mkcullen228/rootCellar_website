@@ -1,7 +1,7 @@
 import sys
 import os
 print(sys.path)
-sys.path.append('app/.heroku/python/lib/python3.6/site-packages/')
+sys.path.append('/app/.heroku/python/lib/python3.6/site-packages/')
 print(sys.path)
 from flask import Flask
 # from config import Config
