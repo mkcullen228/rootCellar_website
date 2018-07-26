@@ -1,4 +1,3 @@
-print("HERE**************")
 import os
 import sys
 # print('\n'.join(sys.path))
