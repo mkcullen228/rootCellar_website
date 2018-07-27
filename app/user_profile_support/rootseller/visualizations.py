@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib
-# matplotlib.use('TkAgg')
-matplotlib.use('Agg')
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
