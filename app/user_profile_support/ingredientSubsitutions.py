@@ -56,7 +56,28 @@ def get_recipe_list(session, user):
 
     user_meal_plan = pd.DataFrame(data={'recipe_id':best_recipe_combo, 'recipe_name':recipe_names})
     session['user_meal_plan'] = user_meal_plan.to_json()
-    return best_recipe_combo, weekly_diet_amount, user_profile_data
+    print(pd.read_json(session['user_meal_plan']))
+
+    df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
+    # session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
+
+    return best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB
+
+# Get ingredient List for Shopping list
+def get_recipe_details(best_recipe_combo, user_profile_data):
+    profile_init = rootprofile.UserProfile(user_profile_data)
+    recipe_init = recipes.Recipes(profile_init)
+    print("\n\n******get_recipe_details")
+    # get ingredients from the recipe list
+    recipe_details = []
+    i = 0
+    for rec_idx in best_recipe_combo:
+        recipe_details.append(recipe_init.recipe_clean[rec_idx])
+        # recipe_details = recipe_details.update(rec_idx=recipe_init.recipe_clean[rec_idx])
+
+    print(type(recipe_details), recipe_details)
+    return recipe_details
+
 
 # Get ingredient List for Shopping list
 def get_shopping_list(best_recipe_combo, user_profile_data):
@@ -65,52 +86,101 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
     # get ingredients from the recipe list
     ingredient_list = []
     for rec_idx in best_recipe_combo:
+        print("\nrec_idx")
+        print(recipe_init.recipe_clean[rec_idx])
         ingredient_list = ingredient_list + recipe_init.recipe_clean[rec_idx]['ingredients']
 
     while '' in ingredient_list:
         ingredient_list.remove('')
 
     # TODO: aggregate the ingredients to combine recipies and amounts
-
+    print(type(ingredient_list), ingredient_list)
     return(ingredient_list)
 
-# TODO:
-def run_master_ingredient_sub(user_profile_data):
-    profile_init = rootprofile.UserProfile(user_profile_data)
+
+def get_ingredient_NDB_number(session, best_recipe_combo):
+    # Save ingredients to Session Data
+    profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
+    recipe_init = recipes.Recipes(profile_init)
+    df_ingredient_NDB = pd.DataFrame()
+    for recipe_id in best_recipe_combo:
+        recipe_data = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)[['Description', 'NDB_NO']]
+        df_ingredient_NDBi = pd.DataFrame(recipe_data)
+        df_ingredient_NDBi['recipe_id'] = recipe_id
+        if df_ingredient_NDB.empty:
+            df_ingredient_NDB = df_ingredient_NDBi
+        else:
+            df_ingredient_NDB = pd.concat([df_ingredient_NDB, df_ingredient_NDBi])
+
+    df_ingredient_NDB = df_ingredient_NDB.reset_index()
+    # print(df_ingredient_NDB.recipe_id.unique())
+
+    return(df_ingredient_NDB)
+
+
+# TODO: Edit single_ingredient_replacement
+# TODO: Remove Default call of recipe
+def get_single_ingredient_replacement(session, raw_input_return, recipe_id='RECIPE_48743'):
+    print("***** SINGLE FOOD REPLACEMENT ******")
+    profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
     recipe_init = recipes.Recipes(profile_init)
     research_init = research.Research(profile_init)
+    ingredient_list = recipe_init.recipe_clean[recipe_id]['ingredients']
+    # Single food replacement based on macros
+    # recipe_id = 'RECIPE_48743'
+    # print(recipe_init.recipe_list_to_conversion_factor_list(recipe_id)[['Description', 'NDB_NO']])
 
-    # Run Subsitution option for Ingredients
-    recipe_itr = 0
-    df_list = []
-    df_summed_list = []
-    recipe_id_list = []
-    name_list = []
+    # raw_input_return = input("Select items to replace:")
+    # raw_input_return = "01116"
+    print("HERE")
+    print(raw_input_return)
+    temp_recipe_dict = {}
+    temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
+    print("HERE**************************")
+    if raw_input_return:
+        # 'Baked'
+        # 'Beef'
+        # 'Beverages'
+        # 'Breakfast_Cereals'
+        # 'Cereal_Grains_and_Pasta'
+        # 'Dairy_and_Egg'
+        # 'Fats_and_Oils'
+        # 'Finfish_and_Shellfish'
+        # 'Fruits_and_Fruit_Juices'
+        # 'Lamb_Veal_and_Game'
+        # 'Legumes_and_Legume'
+        # 'Nut_and_Seed'
+        # 'Pork'
+        # 'Poultry'
+        # 'Sausages_and_Luncheon_Meats'
+        # 'Soups_Sauces_and_Gravies'
+        # 'Spices_and_Herbs'
+        # 'Sweets'
+        # 'Vegetables_and_Vegetable'
 
-    if user_profile_data.plan_exists == False:
-    # If no recipes exist for user create a meal plan
-        best_recipe_combo, weekly_diet_amount, user_profile_data, user_meal_plan = get_recipe_list(user_profile_data, recipe_init)
+        # tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
+        tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
+        print("tag_list", tag_list)
+        new_recipe_dict = recipe_init.recipe_alternitive_create(raw_input_return, tag_list, temp_recipe_dict)
+        print("new_recipe_dict", new_recipe_dict)
+        temp = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
 
-    for recipe in user_meal_plan.recipe_id:
-        temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe)
-        df_list.append(temp_recipe_df)
-        df_summed_list.append(temp_recipe_df.loc[:, profile_init.macro_list + profile_init.micro_list].sum().to_frame())
-        name_list.append(recipe_init.recipe_clean[recipe]['name'])
-        recipe_id_list.append(recipe)
-        recipe_itr += 1
+        df_list = []
+        name_list = []
+        for recipe in new_recipe_dict.keys():
+            temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe, dict=new_recipe_dict)
+            df_list.append(temp_recipe_df)
+            name_list.append(new_recipe_dict[recipe]['name'])
 
-    # SMASH Files together for optimization mapp
-    df = pd.concat(df_summed_list, axis=1)
-    df = df.T.reset_index(drop=True)
-    se = pd.Series(name_list)
-    df['recipe_name'] = se.values
-    se2 = pd.Series(recipe_id_list)
-    df['recipe_id'] = se2.values
-
-    # Create Recipe Visuals for Display
-    recipe_visuals(df_list, df, profile_init, name_list)
-
-    return df, df_list
+        # visualizations.Plots(df_list, profile_init).bar_plot_recipe(name_list, 'test_replacement_barplot')
+        # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
+        print("df_list", df_list)
+        print("\n")
+        print("df", df)
+        # TODO: Figure out what to return
+        # TODO: Replace the ingredients in the session data
+        # TODO: Edit the REcipe with the replacemnt ingredient
+    return ingredient_list # df, df_list
 
 
 # Single food Subsitution
