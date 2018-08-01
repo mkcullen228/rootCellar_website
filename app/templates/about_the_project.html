@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML>
 
 <html>
@@ -43,19 +42,18 @@
 						<div class="inner">
 							<header class="align-center">
 								<h1>About The Project</h1>
-								<p>Anjali Kayal, Mike Gruzynski, Max Lee & Maura Cullen </p>
+								<p>Anjali Kayal, Mike Gruzinski, Max Lee & Maura Cullen </p>
 							</header>
 							<div class="flex flex-2">
 								<div class="col col2">
 									<h3>The Project</h3>
-									<p>The "Root Cellar" project is the final capstone project for University of California, Berkeley Masters of Information and Data Science.
-										Our goal is to make an easy to use meal-plan and pantry to make nutritional eating easier.
-										A more conscientious, data-driven approach to weekly menu planning and cart sourcing not only encourages a more data-driven nutritional
-										effort but also can lead to less waste.
+									<p>The "Root Cellar" project is the final capstone project for Univeristy of Caifornia, Berkeley Masters of Information
+											and Data Science. Our goal is to make an easy to use meal-plan and pantry to make nutitional eating easier.  A more concsientous, data-driven
+											approach to weekly menu planning and cart sourcing not only encourages a more data-drven nutritional effort but also can lead to less waste.</p>
 
-										The concept of this platform was created by team leader, Mike Gruzynski, as a pitch for a capstone project in the Berkeley MIDS program.
-										The project requirements are relatively sparse and allow the team to develop from scratch a Data Science product over the course of 12 weeks.
-									</p>
+									<p>The concept of this platform was created by team leader, Mike Gruzinski, as a pitch for a capstone project in the Berkeley MIDS program.  The
+										project requirements are relatively sparse and allow the team to develop from scratch a Data Science product over the course of 12 weeks.</p>
+
 									<p> Below are a couple of quick summaries that detailed what went into the project. </p>
 									<ul>
 										<li><strong>Data Sources</strong></li>
@@ -86,37 +84,8 @@
 										</ul>
 
 										<li><strong>Algorthims and elements of Data Science Used</strong></li>
-											<h3>Data ETL</h3
-												<p>Recipes have fuzzy language for recipes</p>
-												<ul>
-													<li>Type of proteins i.e. skinless, boneless, etc…</li>
-													<li>Varying format for amount i.e. 2 cans of 16 oz, 1 jar, 1 whole, etc..</li>
-													<li>Linkage to nutritional database was hard if recipe format was not a weight i.e. sometimes the database used volumes or whole units and expected a link to database</li>
-												<ul>
-												<p>Principal Component Analysis (PCA)</p>
-													<ul>
-														<li>Help understand different nutritional space categories of food i.e beef vs chicken vs legumes vs fruits...etc)</li>
-													<ul>
-												<p>Neural Net - CBOW</p>
-														<ul>
-															<li>For ingredient linkage to data.gov nutrition database</li>
-															<li>Tried linear and nonlinear Machine learning algorithms (logistic regression, random forests, SVM, gradient boost) to link ingredient item to database</li>
-															<li>Ingredient list sentence was very non linear (i.e. asparagus washed in water, chicken with skin on, skinless boneless chicken…) and all machine learning algorithms were getting an accuracy around ~80%</li>
-															<li>CBOW neural net helped push accuracy of predicting recipes to 95 percent</li>
-															<li>When recipe fails tag in CBOW-NN it fails softer than linear models and stays within a similar category</li>
-														<ul>
-												<p>Archive-based Micro Genetic Algorithm (AMGA)</p>
-													<ul>
-														<li>For multi-objective optimization (i.e. optimize loss function of important macro and micronutrients)</li>
-														<li>Input of the user is how many meals a week do you want the algorithm to feed you</li>
-														<li>After recipe filter is applied (removes recent recipes and food items you don't like) it will go through and optimize loss function of combination of recipes that make up your meal plan</li>
-														<li>Genetic algorithm was used because it was a discrete mathematical space with many different combinations of recipes</li>
-													<ul>
-												<p>“Social - Network” graph</p>
-													<ul>
-														<li>Network/linkage map to show how different foods interact with other foods (based on our recipes in the recipe database)</li>
-														<li>Also used in logic for ingredient replacement to make a more informed food substitute</li>
-													<ul>
+											<p>Insert here about optimization and classification algorithm</p>
+
 										<li>User Feedback</li>
 
 											<p>Insert here about Mechanical Turk etc.</p>
@@ -133,11 +102,7 @@
 							</div>
 							<p>We hope this impact project impacts:</p>
 							<ul>
-								<li>Why pay a broker fee for recipe suggestions that don't fit in your nutritional space</li>
-										<li>Services like blue apron and hello fresh produce lower quality items and boring recipes that aren’t optimized for the individual’s need</li>
-										<li>Rootseller automatically chooses a meal plan and aggregated food list so you don't have to think about what to buy and how much of it</li>
 								<li>Enable consumers to efficiently find recipes and create meals that maximize nutrients and taste preferences based on items in their pantry</li>
-										<li>Creates meal plans and can find recipes closest to what you have in your pantry</li>
 								<li>Reduce food waste by building a meal plan that optimizes utilization of ingredients in their pantry and supplements with e-grocery cart</li>
 								<li>Aid education and research as a tool to study how different diets and individual food plans alter when changing macro nutrients and quantities</li>
 								<li>Assist restaurants, caterers, and other industry players as a tool to create seasonal menus</li>
@@ -159,15 +124,15 @@
 										<img src="{{ url_for('static', filename='images/pic03.jpg') }}" alt="" />
 									</div>
 									<p>Anjali Kayal</p>
-									<p></p>
+									<p>blah blah blah </p>
 									<a href="#" class="button">LinkedIn</a>
 								</div>
 								<div class="col align-center">
 									<div class="image round fit">
 										<img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="" />
 									</div>
-									<p>Mike Gruzynski</p>
-									<p> </p>
+									<p>Mike Gruzinski</p>
+									<p>blah blah blah </p>
 									<a href="#" class="button">LinkedIn</a>
 								</div>
 								<div class="col align-center">
@@ -175,7 +140,7 @@
 										<img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" />
 									</div>
 									<p>Max Lee</p>
-									<p> </p>
+									<p>blah blah blah </p>
 									<a href="#" class="button">LinkedIn</a>
 								</div>
 								<div class="col align-center">
@@ -183,7 +148,7 @@
 										<img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" />
 									</div>
 									<p>Maura Cullen</p>
-									<p></p>
+									<p>blah blah blah </p>
 									<a href="#" class="button">LinkedIn</a>
 								</div>
 							</div>
