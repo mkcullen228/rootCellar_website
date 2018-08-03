@@ -298,16 +298,14 @@ def single_ingredient_replacement(recipe_id):
                             session['switch_df_temp'] = switch_df.to_json()
                         except:
                             print("** Error in saving to session")
-                        print(display_bottom)
                         display_bottom = True
+                        print(display_bottom)
                     except:
                         print("GET Ingredient SUB FAILED******")
                         msg_print = "We are sorry, We could not find a good replacment matching your request. Pleasse try again."
                         potential_switches = []
                         display_bottom = False
 
-                    # print(session.keys())
-                    # print(pd.read_json(session['switch_df_temp']))
                 else:
                     # User entered an ingredient to sub
                     if ingredientSubForm.replacementChoice.data == "DNR":
