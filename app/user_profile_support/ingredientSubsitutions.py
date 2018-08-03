@@ -221,8 +221,8 @@ def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_i
             break
 
     # Save new tag and ingredient information as varibales
-    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacemnetChoice.data)-1]
-    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacemnetChoice.data)-1]
+    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacementChoice.data)-1]
+    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacementChoice.data)-1]
     curr_recipe = recipe_details[recipe_itr]
 
     # Get Ingredients and tags of Current Recipe
