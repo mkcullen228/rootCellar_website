@@ -119,18 +119,13 @@ def get_ingredient_NDB_number(session, best_recipe_combo):
 # Replaces 1 ingredient in a recipe as user chooses
 def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
     # Single food replacement based on macros
-    print("*** single ingredient replacemnent ****")
-    print(pd.read_json(session['data']))
-    print("OKOKOK")
+
     # Get intial information on user
     profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
-    print("Profile INIT ")
     recipe_init = recipes.Recipes(profile_init)
-    print("recipe_init ")
     research_init = research.Research(profile_init)
-    print("research_init ")
     ingredient_list = recipe_init.recipe_clean[recipe_id]['ingredients']
-    print("inits complete")
+
     # temp_recipe_dict = {}
     # temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
     if len(ingredientSubForm.ingredientSub.data) > 0:
@@ -165,20 +160,16 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         # replacement_category_key = int(replacement.split(":")[-1].strip("'").strip('"'))
         replacement_ndb_tag = ingredientSubForm.ingredientSub.data
         replacement_category_key = ingredientSubForm.foodType.data
-        print("tag ", replacement_ndb_tag, " key: ",  replacement_category_key)
+
         # Taglist = suggested replacemnt food indicies
-        print("Running Macro space distance")
         tag_list, potential_switches = research_init.macro_space_distance_top_n(4, replacement_ndb_tag, [replacement_key_dict[int(replacement_category_key)]])
 
         # Verify one of top three option is not the same as input
-        print("tag_list", tag_list)
         for i, tag in enumerate(tag_list):
             if tag.strip('"') == replacement_ndb_tag:
                 tag_list.remove(tag)
                 potential_switches.remove(potential_switches[i])
-        print("Creating switch df")
-        print(tag_list)
-        print(potential_switches)
+
         switch_df = pd.DataFrame(data={'tags':tag_list[:3], "potential_switches":potential_switches[:3]})
 
         # DO following process to get visuals
@@ -212,7 +203,6 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         # print("visual 1")
         # # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
         # print("visual 2")
-        print("Returning! ")
         return switch_df, potential_switches[:3]
 
 

@@ -294,7 +294,10 @@ def single_ingredient_replacement(recipe_id):
                         print(potential_switches)
                         print(switch_df)
                         print("Saving to session")
-                        session['switch_df_temp'] = switch_df.to_json()
+                        try:
+                            session['switch_df_temp'] = switch_df.to_json()
+                        except:
+                            print("** Error in saving to session")
                         print(display_bottom)
                         display_bottom = True
                     except:
