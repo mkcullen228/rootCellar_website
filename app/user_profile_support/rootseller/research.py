@@ -17,10 +17,10 @@ class Research(object):
         path = 'app/static/csv_files/'
         print("Research INIT")
         try:
-            with open(path+'recipe/recipe_clean_USE.json') as f:
+            with open(path+'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
         except:
-            with open(path+'recipe/recipe_clean_USE.json') as f:
+            with open(path+'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
         print("Data Load success 1")
         try:
