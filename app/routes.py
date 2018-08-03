@@ -290,12 +290,14 @@ def single_ingredient_replacement(recipe_id):
                         switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id_exp)
                         # update session switch options
                         session['switch_df_temp'] = switch_df.to_json()
+                        display_bottom = True
                     except:
                         print("GET Ingredient SUB FAILED******")
                         msg_print = "We are sorry, We could not find a good replacment matching your request. Pleasse try again."
-                        potential_switches = None
+                        potential_switches = []
+                        display_bottom = False
 
-                    display_bottom = True
+
                     # print(session.keys())
                     # print(pd.read_json(session['switch_df_temp']))
                 else:
@@ -317,6 +319,7 @@ def single_ingredient_replacement(recipe_id):
                     display_bottom = False
                     msg_print = "We have updated your recipe with the siwtch!"
 
+                print(potential_switches, display_bottom, msg_print)
                 # Render the Subsitute Ingredient HTML
                 return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values, potential_switches=potential_switches, display_bottom=display_bottom, msg_print=msg_print)
 
