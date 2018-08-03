@@ -287,25 +287,18 @@ def single_ingredient_replacement(recipe_id):
                 if ingredientSubForm.replacementChoice.data == 'None':
                     # Find options for food replacements
                     try:
-                        print("try")
                         switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id_exp)
                         # update session switch options
-                        print("returned")
-                        print(potential_switches)
-                        print(switch_df)
-                        print("Saving to session")
                         try:
                             session['switch_df_temp'] = switch_df.to_json()
                         except:
                             print("** Error in saving to session")
                         display_bottom = True
-                        print(display_bottom)
                     except:
                         print("GET Ingredient SUB FAILED******")
                         msg_print = "We are sorry, We could not find a good replacment matching your request. Pleasse try again."
                         potential_switches = []
                         display_bottom = False
-
                 else:
                     # User entered an ingredient to sub
                     if ingredientSubForm.replacementChoice.data == "DNR":
@@ -325,7 +318,6 @@ def single_ingredient_replacement(recipe_id):
                     display_bottom = False
                     msg_print = "We have updated your recipe with the siwtch!"
 
-                print(potential_switches, display_bottom, msg_print)
                 # Render the Subsitute Ingredient HTML
                 return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values, potential_switches=potential_switches, display_bottom=display_bottom, msg_print=msg_print)
 

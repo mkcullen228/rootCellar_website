@@ -247,5 +247,7 @@ def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_i
     df_ingredient_NDB_mi = df_ingredient_NDB[df_ingredient_NDB.recipe_id != recipe_id]
     df_ingredient_NDB = pd.concat([df_ingredient_NDB_mi, df_ingredient_NDBi])
     df_ingredient_NDB.reset_index(inplace=True)
+    if 'level_0' in df_ingredient_NDB.columns:
+        df_ingredient_NDB.drop(columns=['level_0'], inplace=True)
 
     return df_ingredient_NDB, df_ingredient_NDBi
