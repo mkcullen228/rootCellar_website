@@ -82,7 +82,7 @@
 								<h5>Separate each item with a comma.</h5>
 								<div class="inner">
 									<form method=post action="">
-											<p>{{ form1.pantryItemList }} </p>
+											<p>{{ form1.pantryItemList(autocomplete="off") }} </p>
 										{% if pantry_exists == False %}
 											<p><input type=submit value="Create Pantry"></p>
 										{% else %}
