@@ -15,20 +15,18 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 class Research(object):
     def __init__(self, profile_init):
         path = 'app/static/csv_files/'
-        print("Research INIT")
         try:
             with open(path+'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
         except:
             with open(path+'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
-        print("Data Load success 1")
+
         try:
             self.df_pca = pd.read_csv(path+'pca_nutrition_normalized_minmax_df.csv')
         except:
             self.df_pca = None
-        print("Data Load success 2")
-        print("nutrition INIT")
+
         self.nutrition_init = nutrition.Nutrition()
         self.profile_init = profile_init
 

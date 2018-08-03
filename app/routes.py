@@ -306,7 +306,6 @@ def single_ingredient_replacement(recipe_id):
                         potential_switches = []
                         display_bottom = False
 
-
                     # print(session.keys())
                     # print(pd.read_json(session['switch_df_temp']))
                 else:
