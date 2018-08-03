@@ -120,10 +120,15 @@ def get_ingredient_NDB_number(session, best_recipe_combo):
 def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
     # Single food replacement based on macros
     print("*** single ingredient replacemnent ****")
+    print(pd.read_json(session['data']))
+    print("OKOKOK")
     # Get intial information on user
     profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
+    print("Profile INIT ")
     recipe_init = recipes.Recipes(profile_init)
+    print("recipe_init ")
     research_init = research.Research(profile_init)
+    print("research_init ")
     ingredient_list = recipe_init.recipe_clean[recipe_id]['ingredients']
     print("inits complete")
     # temp_recipe_dict = {}
