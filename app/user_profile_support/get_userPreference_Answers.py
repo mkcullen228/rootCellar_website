@@ -57,11 +57,12 @@ def get_userPreferences(user):
             user_prefs['filter_list'] = [filter_list]
             # user_prefs['plan_exists'] = False
         print("Returning user preferenecs")
-        return userPref_df
+        # return userPref_df
+        return user_prefs
     else:
         print("returning False")
         # Send to the user new user_profile page to fill out preferneces
-        return(False)
+        return False
 
 
 def create_ignore_list_from_session_df(session):

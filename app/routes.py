@@ -148,6 +148,7 @@ def user_profile():
             print("Data is in session keys")
             user_profile_data = pd.read_json(session['data'])
 
+            print("Calculate Macros and Micros")
             # Calculate or Load Micro and Macros for the User
             if 'macros' not in session.keys():
                 macros = get_macro_nutrients(session)
