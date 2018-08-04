@@ -121,7 +121,7 @@ def preference_survey():
     if current_user.is_authenticated:
         user = current_user.username
         print(user)
-        return render_template('survey.html', title='Preferences', user)
+        return render_template('survey.html', title='Preferences', user=user)
     else:
         return redirect(url_for('register'))
 
