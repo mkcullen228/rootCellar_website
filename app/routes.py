@@ -89,20 +89,41 @@ def register():
         return redirect(url_for('user_profile'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        login_user(user)
-        return redirect(url_for('user_profile'))
+        try:
+            print("Try Register")
+            user = User(username=form.username.data, email=form.email.data)
+            print(user)
+            user.authenticated=True
+            print("User is authenticated")
+            user.set_password(form.password.data)
+            print("Password set")
+            db.session.add(user)
+            print("User is added to session")
+            db.session.commit()
+            print("User is comitted to session")
+            flash('Congratulations, you are now a registered user!')
+
+            login_user(user)
+            print("User Logged in")
+            return redirect(url_for('user_profile'))
+        except:
+            print("ERROR")
+            db.session.rollback()
+            msg = "We apologize, There has been an error with Regsitraion. Please Try again"
+
     return render_template('register.html', title='Register', form=form)
 
 
 # User Prefernce Survey
 @app.route('/preference_survey')
 def preference_survey():
-   return render_template('survey.html', title='Preferences')
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        user = current_user.username
+        print(user)
+        return render_template('survey.html', title='Preferences', user)
+    else:
+        return url_for('register'))
 
 
 # Render User Profile page
