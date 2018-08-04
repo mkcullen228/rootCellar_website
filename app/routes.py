@@ -51,6 +51,7 @@ def login():
             msg = "We did not recognize your username. Please try again or go to regsitration page to register."
             print("HERE")
             return render_template('login.html', title='Sign In', form=form, msg=msg)
+
         return redirect(url_for('user_profile'))
     return render_template('login.html', title='Sign In', form=form, msg=msg)
 
@@ -136,6 +137,7 @@ def user_profile():
             print("Data is not in session keys")
             # Get user prefernces from form if the session dat ahas not yet been populated
             data = get_userPreferences(user)
+            print(data)
             if data is not False:
                 session['data'] = data.to_json()
             print('data' in session.keys())
@@ -243,7 +245,7 @@ def recipe_recommendation():
 
         user_profile_data = pd.read_json(session['data'])
         if user_profile_data is not False:
-            user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
+            user_meal_plan = return_user_meal_plan(session, user_profile_data, user=user)
             update_text = ''
 
             #### Here is where plot needs to be called and saved off for jpg
