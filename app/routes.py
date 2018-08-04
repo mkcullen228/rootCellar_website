@@ -86,8 +86,8 @@ def logout():
 # TODO: clear form data after registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('user_profile'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('user_profile'))
     form = RegistrationForm()
     if form.validate_on_submit():
         try:
