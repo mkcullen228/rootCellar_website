@@ -13,7 +13,9 @@ def get_userPreferences(user):
             'https://www.googleapis.com/auth/drive']
     print("Getting Survey Responses")
     cred_path = 'app/static/csv_files/'
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(cred_path + 'w210-e41e21aed377.json', scope)
+    print(cred_path)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(cred_path+'w210-e41e21aed377.json', scope)
+    print(credentials)
     print("Success!")
     # Get Google Sheet of Reponses
     gc = gspread.authorize(credentials)
