@@ -123,7 +123,7 @@ def preference_survey():
         print(user)
         return render_template('survey.html', title='Preferences', user)
     else:
-        return url_for('register'))
+        return redirect(url_for('register'))
 
 
 # Render User Profile page
