@@ -8,7 +8,7 @@ from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
-from app.user_profile_support.run_pantry_suggestion import get_pantry_suggetsions
+
 import numpy as np
 # import matplotlib
 # matplotlib.use('Agg')
@@ -49,7 +49,6 @@ def login():
             login_user(user, remember=form.remember_me.data)
         except:
             msg = "We did not recognize your username. Please try again or go to regsitration page to register."
-            print("HERE")
             return render_template('login.html', title='Sign In', form=form, msg=msg)
 
         return redirect(url_for('user_profile'))
@@ -97,7 +96,6 @@ def register():
             user.authenticated=True
             print("User is authenticated")
             user.set_password(form.password.data)
-            print("Password set")
             db.session.add(user)
             print("User is added to session")
             db.session.commit()
@@ -148,7 +146,6 @@ def user_profile():
             print("Data is in session keys")
             user_profile_data = pd.read_json(session['data'])
 
-            print("Calculate Macros and Micros")
             # Calculate or Load Micro and Macros for the User
             if 'macros' not in session.keys():
                 macros = get_macro_nutrients(session)
@@ -292,7 +289,6 @@ def recipe_recommendation():
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
         return redirect(url_for('index'))
 
-
 # TODO: visualizations
 @app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
 def single_ingredient_replacement(recipe_id):
@@ -305,6 +301,7 @@ def single_ingredient_replacement(recipe_id):
             best_recipe_combo = user_meal_plan.recipe_id
 
             # Get input Form from models for html
+            choices = ['one','two', 'three']
             ingredientSubForm = IngredientSubForm(request.form)
             recipe_id_exp = "RECIPE_"+str(recipe_id) # Recipe User is choosing to Edit
 
