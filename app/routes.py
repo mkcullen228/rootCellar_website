@@ -59,15 +59,26 @@ def login():
 def logout():
     logout_user()
     print(session.keys())
-    session.pop('data', None)
-    session.pop('ignore_list', None)
-    session.pop('user_id', None)
-    session.pop('user_meal_plan', None)
-    session.pop('micros', None)
-    session.pop('macros', None)
-    session.pop('df_ingredient_NDB', None)
-    for key in session.keys():
-        session.pop(key, None)
+    if 'data' in session.keys():
+        session.pop('data', None)
+    if 'ignore_list' in session.keys():
+        session.pop('ignore_list', None)
+    if 'user_id' in session.keys():
+        session.pop('user_id', None)
+    if 'user_meal_plan' in session.keys():
+        session.pop('user_meal_plan', None)
+    if 'micros' in session.keys():
+        session.pop('micros', None)
+    if 'macros' in session.keys():
+        session.pop('macros', None)
+    if 'df_ingredient_NDB' in session.keys():
+        session.pop('df_ingredient_NDB', None)
+    if 'pantry_items_list' in session.keys():
+        session.pop('pantry_items_list', None)
+    if 'pantry_recipe_ids' in session.keys():
+        session.pop('pantry_recipe_ids', None)
+    if 'switch_df_temp' in session.keys():
+        session.pop('switch_df_temp', None)
     return redirect(url_for('index'))
 
 # User Registraions
