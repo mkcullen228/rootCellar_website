@@ -66,7 +66,8 @@ def logout():
     session.pop('micros', None)
     session.pop('macros', None)
     session.pop('df_ingredient_NDB', None)
-
+    for key in session.keys():
+        session.pop(key, None)
     return redirect(url_for('index'))
 
 # User Registraions
@@ -96,16 +97,19 @@ def preference_survey():
 # Render User Profile page
 @app.route('/user_profile', methods=['GET', 'POST'])
 def user_profile():
+    print(current_user.is_authenticated)
     if current_user.is_authenticated:
         user = current_user.username
-
         if 'data' not in session.keys():
+            print("Data is not in session keys")
             # Get user prefernces from form if the session dat ahas not yet been populated
             data = get_userPreferences(user)
             if data is not False:
                 session['data'] = data.to_json()
+            print('data' in session.keys())
 
         if 'data' in session.keys():
+            print("Data is in session keys")
             user_profile_data = pd.read_json(session['data'])
 
             # Calculate or Load Micro and Macros for the User
@@ -115,13 +119,15 @@ def user_profile():
                 micros = get_micro_nutrients(session)
             macros = pd.read_json(session['macros'])
             micros = pd.read_json(session['micros'])
-
+            print("Micros and Macros Calculated")
             # Check if Recipe Suggestions have been created for the user
             # If not, calclate and pass to profile to list
+
             if 'user_meal_plan' not in session.keys():
+                print("user_meal_plan not in keys")
                 best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
             user_meal_plan = pd.read_json(session['user_meal_plan'])
-
+            print("user_meal_plan calculated")
             # Check to make sure recipes are not in the ignore list
             ignore_list = get_user_ignore_responses(user_profile_data, user)
             while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
@@ -132,18 +138,23 @@ def user_profile():
             # micros_form = InputMicroNutrientsForm(request.form)
 
             if request.method == 'POST':
+                print("POST ")
                 macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
                 # Save micro and Macro edited list for later fram
                 session['macros'] = pd.DataFrame(macros).to_json()
                 session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
+
                 # Render the Users Profile Page
                 return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values)
             else:
+                print(request.method)
                 return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values)
         else:
+            print("data does not exist ")
+            print(session.keys())
             # Render the New User Landing page until they complete Preferneces Survey
             return render_template('userProfile_new.html', title="User Preferneces", user=user)
-        return redirect(url_for('index'))
+    return redirect(url_for('index'))
 
 
 ## Recipe Center ----------------------------------------------
