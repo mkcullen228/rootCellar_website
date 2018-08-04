@@ -136,7 +136,10 @@ def user_profile():
         if 'data' not in session.keys():
             print("Data is not in session keys")
             # Get user prefernces from form if the session dat ahas not yet been populated
-            data = get_userPreferences(user)
+            try:
+                data = get_userPreferences(user)
+            except:
+                data = False
             if data is not False:
                 session['data'] = data.to_json()
             print('data' in session.keys())
