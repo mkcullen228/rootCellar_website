@@ -16,14 +16,13 @@ class Research(object):
     def __init__(self, profile_init):
         path = 'app/static/csv_files/'
         try:
-            with open(path+'recipe_clean_USE.json') as f:
+            with open(path + 'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
         except:
-            with open(path+'recipe_clean_USE.json') as f:
+            with open(path + 'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
-
         try:
-            self.df_pca = pd.read_csv(path+'pca_nutrition_normalized_minmax_df.csv')
+            self.df_pca = pd.read_csv(path+'nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
         except:
             self.df_pca = None
 

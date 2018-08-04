@@ -58,6 +58,7 @@
 												 <li> {{ name }} </li>
 											 {%endfor%}
 											 </ul>
+												<p><a href = "/display_recipe" class="button">View Recipe Details</a></p>
 											 <img src="{{ url_for('static', filename='images/test_barplot.png') }}" alt="" />
 											 <img src="{{ url_for('static', filename='images/test_radar_plot.png') }}" alt="" />
 										{% else %}
@@ -105,7 +106,13 @@
 												<li> {{item}} </li>
 											{%endfor%}
 										</ul>
+										<form method=post action="">
+											<h4>To Remove Items prom pantry, list them below.</h4>
+											<p>{{ form2.removePantryItems(autocomplete="off") }} </p>
+											<p><input type=submit value="Remove Item(s) From Pantry"></p>
+										</form>
 								</div>
+
 							<!-- </div> -->
 						{% endif %}
 				</section>

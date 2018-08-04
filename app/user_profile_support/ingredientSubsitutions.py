@@ -70,7 +70,10 @@ def get_recipe_details(best_recipe_combo, user_profile_data):
     # get ingredients from the recipe list
     recipe_details = []
     i = 0
+    print("best_recipe_combo")
+    print(best_recipe_combo)
     for rec_idx in best_recipe_combo:
+        print(rec_idx)
         recipe_details.append(recipe_init.recipe_clean[rec_idx])
         # recipe_details = recipe_details.update(rec_idx=recipe_init.recipe_clean[rec_idx])
 
@@ -169,7 +172,6 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
             if tag.strip('"') == replacement_ndb_tag:
                 tag_list.remove(tag)
                 potential_switches.remove(potential_switches[i])
-
         switch_df = pd.DataFrame(data={'tags':tag_list[:3], "potential_switches":potential_switches[:3]})
 
         # DO following process to get visuals
