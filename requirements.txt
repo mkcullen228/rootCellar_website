@@ -20,7 +20,6 @@ h5py==2.8.0
 httplib2==0.11.3
 idna==2.7
 itsdangerous==0.24
-jsonschema==2.6.0
 Jinja2==2.10
 Keras==2.2.0
 Keras-Applications==1.0.2
@@ -44,8 +43,6 @@ python-editor==1.0.3
 python-Levenshtein==0.12.0
 pytz==2018.4
 PyYAML==3.13
-plotly==3.1.0
-ply==3.10
 requests==2.19.1
 rsa==3.4.2
 rules==1.3
