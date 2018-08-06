@@ -2,7 +2,7 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for, session, request
 from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
+from app.models import *
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
@@ -122,9 +122,17 @@ def register():
 def preference_survey():
     print(current_user.is_authenticated)
     if current_user.is_authenticated:
-        user = current_user.username
-        print(user)
-        return render_template('survey.html', title='Preferences', user=user)
+        # Check if user is New or Returning
+        print(session.keys())
+        if 'data' in session.keys():
+            data = pd.read_json(session['data'])
+            is_new_user = False
+            user = data.firstname.values[0]
+        else:
+            is_new_user = True
+            user = current_user.username
+
+        return render_template('survey.html', title='Preferences', user=user, is_new_user=is_new_user)
     else:
         return redirect(url_for('register'))
 
@@ -258,6 +266,7 @@ def recipe_recommendation():
             recipe_init = recipes.Recipes(profile_init)
             list_keys = user_meal_plan['recipe_id'].get_values()
             #// END
+
             #// START: loop through each recipe and convert into mathmatical nutrition space
             # return:
             # df_list -> for stacked barplot graph of each recipe individual and what is inside the recipe
@@ -315,6 +324,7 @@ def recipe_recommendation():
                 data_micro_normalized = data_micro_raw[profile_init.profile_micro_filtered_df.columns] / profile_init.profile_micro_filtered_df
                 data_micro_raw.columns = profile_init.micro_label_list
                 data_micro_normalized.columns = profile_init.micro_label_list
+
                 data_macro = df.loc[itr, profile_init.macro_list].to_frame().T.reset_index(drop=True)
                 # print(profile_init.init_macro)
                 init_macro = macronutrients.Macronutrients(user_profile_data)
@@ -322,6 +332,7 @@ def recipe_recommendation():
                 new_columns = init_macro.convert_labels_to_pretty_labels(data_macro.columns)
                 # new_columns = profile_init.convert_labels_to_pretty_labels(data_macro.columns)
                 data_macro.columns = new_columns
+
                 # init_micro = micronutrients.MicroNutrients(self.userprofile_df)
                 # data_macro_raw = profile_init.init_macro.add_unsaturated_fat_columns(data_macro)
                 data_macro_raw = init_macro.add_unsaturated_fat_columns(data_macro)
@@ -365,6 +376,7 @@ def recipe_recommendation():
                                 size=10)
                 )
                 trace_radar_macro_list.append(temp_trace_radar_macro)
+
 
                 r_micro = data_micro_normalized[profile_init.micro_label_list].values.tolist()[0]
                 r_micro.append(r_micro[0])
@@ -460,46 +472,99 @@ def recipe_recommendation():
             # //END
 
             # Form and route to ignore Recipes from list
-            ignore_form = IgnoreRecipeForm(request.form)
+            # print("in routes", session.keys())
+            # print(create_ignore_form(session))
+            # ignore_form = create_ignore_form(session)
+            #
+            # # ignore_form2 = ignore_form.IgnoreRecipeForm(request.form)
+            # print("Returned")
+            # # print(type(ignore_form2), ignore_form2)
+            # print(type(ignore_form), ignore_form)
+
+            # my_query = ['Yes', 'No', 'Yep']
+            # print(my_query)
+            # ignore_form.choices.query = my_query
+            # print(ignore_form)
+            # scaleRecipeForm1 = scaleRecipeForm(request.form)
             # Form for Ingredient Swap Page
+            ignoreRecipeForm = IgnoreRecipeForm(request.form)
             recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
+
+            print(type(recipeNameIdForm), recipeNameIdForm)
             if request.method == 'POST':
                 # Ingredient Replacment Request
                 if recipeNameIdForm.recipe_name.data is not '':
                     best_recipe_combo = user_meal_plan.recipe_id
                     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-
-                    recipe_id = recipeNameIdForm.recipe_name.data
-                    for itr, details in enumerate(recipe_details):
-                        if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
-                            recipe_id = recipe_details[itr].get('id')
-                            break
+                    recipe_id = get_recipe_id_from_name(recipeNameIdForm.recipe_name.data, recipe_details)
+                    # def get_recipe_id_from_name(recipeNameIdForm, recipe_details):
+                    #     # recipe_id = recipeNameIdForm.recipe_name.data
+                    #     for itr, details in enumerate(recipe_details):
+                    #         if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
+                    #             recipe_id = recipe_details[itr].get('id')
+                    #             break
+                    #     return recipe_id
 
                     # single_ingredient_replacement(recipe_id)
                     return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
+
+                # if scaleRecipeForm1.customizeRecipeName.data is not '':
+                #     best_recipe_combo = user_meal_plan.recipe_id
+                #     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+                #     recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
+                #     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
+
                 else:
+                    # if scaleRecipeForm1.customizeRecipeName.data is not '':
+                    #     best_recipe_combo = user_meal_plan.recipe_id
+                    #     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+                    #     recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
+                    #     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
+
+
                     # Ignore ingredient request
                     print("**TODO: Clear box when submitted")
                     # TODO: clear input box after submit
+                    print(ignore_form)
+                    print(ignore_form.ignore_list.data)
+                    print(ignore_form.IgnoreRecipeForm)
                     process_ignore_form(session, ignore_form)
                     # Render the Users Profile Page
                     update_text = 'Sorry you did not like the recipes! You will not see it again. Regenerate your recipe plan for new suggestions'
                     # return redirect(url_for('recipe_recommendation'))
-                    return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm, update_text=update_text, ids=ids, graphJSON=graphJSON,
-                                       radar_data_macro=data_meal_plan_radar_macro,
-                                       radar_layout_macro=layout_meal_plan_radar_macro,
-                                           radar_data_micro=data_meal_plan_radar_micro,
-                                           radar_layout_micro=layout_meal_plan_radar_micro)
+                    return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignoreRecipeForm, form2=recipeNameIdForm, update_text=update_text)
+                    # , ids=ids, graphJSON=graphJSON,
+                    #                    radar_data_macro=data_meal_plan_radar_macro,
+                    #                    radar_layout_macro=layout_meal_plan_radar_macro,
+                    #                        radar_data_micro=data_meal_plan_radar_micro,
+                    #                        radar_layout_micro=layout_meal_plan_radar_micro
+                    #                        )
             else:
-                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm, update_text=update_text, ids=ids, graphJSON=graphJSON,
-                                       radar_data_macro=data_meal_plan_radar_macro,
-                                       radar_layout_macro=layout_meal_plan_radar_macro,
-                                           radar_data_micro=data_meal_plan_radar_micro,
-                                           radar_layout_micro=layout_meal_plan_radar_micro)
+                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignoreRecipeForm, form2=recipeNameIdForm, update_text=update_text)
+                # , ids=ids)
+                # , graphJSON=graphJSON,
+                                       # radar_data_macro=data_meal_plan_radar_macro,
+                                       # radar_layout_macro=layout_meal_plan_radar_macro,
+                                       #     radar_data_micro=data_meal_plan_radar_micro,
+                                       #     radar_layout_micro=layout_meal_plan_radar_micro)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
         return redirect(url_for('index'))
+
+
+# Customize Serving Size of Recipe
+@app.route('/customize_serving_size/<recipe_id>')
+def customize_serving_size(recipe_id):
+    print("Customize Recipe")
+    print(recipe_id)
+    user = current_user.username
+    if pd.read_json(session['data']) is not False:
+        user_meal_plan = pd.read_json(session['user_meal_plan'])
+
+        return render_template('customize_serving_size.html', recipe_id=recipe_id)
+    return redirect(url_for('index'))
+
 
 # TODO: visualizations
 @app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
@@ -546,9 +611,6 @@ def single_ingredient_replacement(recipe_id):
                         potential_switches = []
                         display_bottom = False
 
-
-                    # print(session.keys())
-                    # print(pd.read_json(session['switch_df_temp']))
                 else:
                     # User entered an ingredient to sub
                     if ingredientSubForm.replacementChoice.data == "DNR":
@@ -570,7 +632,8 @@ def single_ingredient_replacement(recipe_id):
 
                 print(potential_switches, display_bottom, msg_print)
                 # Render the Subsitute Ingredient HTML
-                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values, potential_switches=potential_switches, display_bottom=display_bottom, msg_print=msg_print)
+                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values,
+                potential_switches=potential_switches, display_bottom=display_bottom, msg_print=msg_print)
 
             else:
                 # Displays Ingredients User Can Choose to Replace
@@ -714,7 +777,6 @@ def shopping_list():
 def food_network():
     return render_template('data.html', title="Graph Test")
 
-
 # Recipe Suggetsion from Pantry Items
 @app.route('/pantry_recipe', methods=['GET', 'POST']) #  methods=['GET', 'POST']
 def pantry_recipe():
@@ -817,10 +879,11 @@ def pantry_recipe():
         if remove_item is not False:
             pantry_exists=True
         print(pantry_items_list, recipe_name_suggestion_list, pantry_exists, has_suggestions, msg)
-        return render_template('pantry_recipe.html', pantry_items_list=pantry_items_list, recipe_name_suggestion_list=recipe_name_suggestion_list, form1=createPantryForm1, form2=removePantryItemsForm1, pantry_exists=pantry_exists, has_suggestions=has_suggestions, msg=msg)
+        return render_template('pantry_recipe.html', pantry_items_list=pantry_items_list,
+        recipe_name_suggestion_list=recipe_name_suggestion_list, form1=createPantryForm1,
+        form2=removePantryItemsForm1, pantry_exists=pantry_exists, has_suggestions=has_suggestions, msg=msg)
     else:
         return redirect(url_for('index'))
-
 
 # Delet Entire Pantry
 @app.route('/delete_pantry_items') #  methods=['GET', 'POST']
