@@ -249,7 +249,6 @@ def recipe_recommendation():
 
         user_profile_data = pd.read_json(session['data'])
         if user_profile_data is not False:
-            print("Recipe Recomendation")
             user_meal_plan = return_user_meal_plan(session, user_profile_data, user=user)
             update_text = ''
             # user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
@@ -259,7 +258,6 @@ def recipe_recommendation():
             recipe_init = recipes.Recipes(profile_init)
             list_keys = user_meal_plan['recipe_id'].get_values()
             #// END
-            print(list_keys)
             #// START: loop through each recipe and convert into mathmatical nutrition space
             # return:
             # df_list -> for stacked barplot graph of each recipe individual and what is inside the recipe
@@ -284,7 +282,6 @@ def recipe_recommendation():
                     df_summed_list.append(temp_recipe_df.loc[:, profile_init.macro_list + profile_init.micro_list].sum().to_frame())
                     name_list.append(recipe_init.recipe_clean[recipe]['name'])
                     recipe_id_list.append(recipe)
-                    print("recipe_id_list", recipe_id_list)
                 except:
                     print("FAILED, Recipe concatenation...RECIPE=", recipe)
                 recipe_itr += 1
@@ -298,7 +295,6 @@ def recipe_recommendation():
             # // END
 
             #// START: initialize lists for plotting information and visualizations
-            print("Getting Labels")
             labels = profile_init.macro_label_list + profile_init.micro_label_list
             recipe_list = df['recipe_id'].get_values()
             recipe_names_list = df['recipe_name'].get_values()
@@ -313,14 +309,12 @@ def recipe_recommendation():
             trace_radar_micro_list = []
             master_stack_list = []
             buttons_list = []
-            print("Length Recipe_List ", len(recipe_list))
             for itr in range(len(recipe_list)):
                 #// START: Aggregate information and transform data labels into easily read output labels
                 data_micro_raw = df.loc[itr, profile_init.micro_list].to_frame().T.reset_index(drop=True)
                 data_micro_normalized = data_micro_raw[profile_init.profile_micro_filtered_df.columns] / profile_init.profile_micro_filtered_df
                 data_micro_raw.columns = profile_init.micro_label_list
                 data_micro_normalized.columns = profile_init.micro_label_list
-                print("Here1")
                 data_macro = df.loc[itr, profile_init.macro_list].to_frame().T.reset_index(drop=True)
                 # print(profile_init.init_macro)
                 init_macro = macronutrients.Macronutrients(user_profile_data)
@@ -328,7 +322,6 @@ def recipe_recommendation():
                 new_columns = init_macro.convert_labels_to_pretty_labels(data_macro.columns)
                 # new_columns = profile_init.convert_labels_to_pretty_labels(data_macro.columns)
                 data_macro.columns = new_columns
-                print("Here2")
                 # init_micro = micronutrients.MicroNutrients(self.userprofile_df)
                 # data_macro_raw = profile_init.init_macro.add_unsaturated_fat_columns(data_macro)
                 data_macro_raw = init_macro.add_unsaturated_fat_columns(data_macro)
@@ -339,7 +332,6 @@ def recipe_recommendation():
                 joined_nomalized_df = data_macro_normalized.join(data_micro_normalized)
                 #// END
 
-                print("Createing Traces 1s")
                 # // START: create plotly bar graph for meal plan visualizations
                 temp_trace_bar = dict(
                     x=labels,
@@ -355,7 +347,6 @@ def recipe_recommendation():
                 #// END
 
                 # // START: create plotly radar graph for micro and macro (seperatley) nutrients for meal plan visualizations
-                print("Createing Traces 2")
                 r_macro = data_macro_normalized[profile_init.macro_label_list].values.tolist()[0]
                 r_macro.append(r_macro[0])
                 theta_macro = profile_init.macro_label_list.copy()
@@ -375,7 +366,6 @@ def recipe_recommendation():
                 )
                 trace_radar_macro_list.append(temp_trace_radar_macro)
 
-                print("Createing Traces 3")
                 r_micro = data_micro_normalized[profile_init.micro_label_list].values.tolist()[0]
                 r_micro.append(r_micro[0])
                 theta_micro = profile_init.micro_label_list.copy()
@@ -395,7 +385,6 @@ def recipe_recommendation():
                 trace_radar_micro_list.append(temp_trace_radar_micro)
                 #// END
 
-                print("Loop Unaggregated list of recipes")
                 # // START: need to loop through unagreggated recipes to get stqcked bar graph of each meal ratio of what goes into the recipe
                 recipe_temp_df = df_list[itr].copy()
                 recipe_temp_df = recipe_temp_df.reset_index(drop=True)
