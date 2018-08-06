@@ -472,25 +472,10 @@ def recipe_recommendation():
             # //END
 
             # Form and route to ignore Recipes from list
-            # print("in routes", session.keys())
-            # print(create_ignore_form(session))
-            # ignore_form = create_ignore_form(session)
-            #
-            # # ignore_form2 = ignore_form.IgnoreRecipeForm(request.form)
-            # print("Returned")
-            # # print(type(ignore_form2), ignore_form2)
-            # print(type(ignore_form), ignore_form)
-
-            # my_query = ['Yes', 'No', 'Yep']
-            # print(my_query)
-            # ignore_form.choices.query = my_query
-            # print(ignore_form)
-            # scaleRecipeForm1 = scaleRecipeForm(request.form)
+            ignore_form = IgnoreRecipeForm(request.form)
+            scaleRecipeForm1 = scaleRecipeForm(request.form)
             # Form for Ingredient Swap Page
-            ignoreRecipeForm = IgnoreRecipeForm(request.form)
             recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
-
-            print(type(recipeNameIdForm), recipeNameIdForm)
             if request.method == 'POST':
                 # Ingredient Replacment Request
                 if recipeNameIdForm.recipe_name.data is not '':
@@ -508,45 +493,42 @@ def recipe_recommendation():
                     # single_ingredient_replacement(recipe_id)
                     return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
 
-                # if scaleRecipeForm1.customizeRecipeName.data is not '':
-                #     best_recipe_combo = user_meal_plan.recipe_id
-                #     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-                #     recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
-                #     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
+                if scaleRecipeForm1.customizeRecipeName.data is not '':
+                    best_recipe_combo = user_meal_plan.recipe_id
+                    recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+                    recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
+                    return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
 
                 else:
-                    # if scaleRecipeForm1.customizeRecipeName.data is not '':
-                    #     best_recipe_combo = user_meal_plan.recipe_id
-                    #     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-                    #     recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
-                    #     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
+                    if scaleRecipeForm1.customizeRecipeName.data is not '':
+                        best_recipe_combo = user_meal_plan.recipe_id
+                        recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+                        recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
+                        return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
 
 
                     # Ignore ingredient request
                     print("**TODO: Clear box when submitted")
                     # TODO: clear input box after submit
                     print(ignore_form)
-                    print(ignore_form.ignore_list.data)
-                    print(ignore_form.IgnoreRecipeForm)
+                    print(ignore_form.data)
                     process_ignore_form(session, ignore_form)
                     # Render the Users Profile Page
                     update_text = 'Sorry you did not like the recipes! You will not see it again. Regenerate your recipe plan for new suggestions'
                     # return redirect(url_for('recipe_recommendation'))
-                    return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignoreRecipeForm, form2=recipeNameIdForm, update_text=update_text)
-                    # , ids=ids, graphJSON=graphJSON,
-                    #                    radar_data_macro=data_meal_plan_radar_macro,
-                    #                    radar_layout_macro=layout_meal_plan_radar_macro,
-                    #                        radar_data_micro=data_meal_plan_radar_micro,
-                    #                        radar_layout_micro=layout_meal_plan_radar_micro
-                    #                        )
+                    return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm, update_text=update_text, ids=ids, graphJSON=graphJSON,
+                                       radar_data_macro=data_meal_plan_radar_macro,
+                                       radar_layout_macro=layout_meal_plan_radar_macro,
+                                           radar_data_micro=data_meal_plan_radar_micro,
+                                           radar_layout_micro=layout_meal_plan_radar_micro,
+                                           scaleRecipeForm=scaleRecipeForm1)
             else:
-                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignoreRecipeForm, form2=recipeNameIdForm, update_text=update_text)
-                # , ids=ids)
-                # , graphJSON=graphJSON,
-                                       # radar_data_macro=data_meal_plan_radar_macro,
-                                       # radar_layout_macro=layout_meal_plan_radar_macro,
-                                       #     radar_data_micro=data_meal_plan_radar_micro,
-                                       #     radar_layout_micro=layout_meal_plan_radar_micro)
+                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm, update_text=update_text, ids=ids, graphJSON=graphJSON,
+                                       radar_data_macro=data_meal_plan_radar_macro,
+                                       radar_layout_macro=layout_meal_plan_radar_macro,
+                                           radar_data_micro=data_meal_plan_radar_micro,
+                                           radar_layout_micro=layout_meal_plan_radar_micro,
+                                           scaleRecipeForm=scaleRecipeForm1)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
