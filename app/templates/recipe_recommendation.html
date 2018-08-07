@@ -52,7 +52,7 @@
 
 				<section class="wrapper style1">
 					<div class="inner">
-					<h1>Recipe Selection Page</h1>
+					<h1>Personalize Your Meal Plan</h1>
 					</div>
 
 				<p></p>
@@ -60,28 +60,24 @@
 						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
-								<h2>My Recipe Plan</h2>
-								<h5>Enter Recipes you do not want to make into the survey below to remove from list. We will replace it better recipe option!</h5>
-								<h5>Based on your user preferences. We suggest the following Recipes:</h5>
-
-								<div style="float: left; width: 30%;">
-										<ul>
-											{% for id in user_meal_plan.recipe_id %}
-												<li> {{id+":"}} </li>
-											{%endfor%}
-										</ul>
+								<h3>My Recipe Plan</h3>
+								<div style="float: right; width: 100%;">
+									<ul>
+										{% for name in user_meal_plan.recipe_name %}
+											<li> {{name}} </li>
+										{%endfor%}
+									</ul>
 								</div>
-								<div style="float: right; width: 70%;">
-										<ul style="list-style: none;">
-											{% for name in user_meal_plan.recipe_name %}
-												<li> {{name}} </li>
-											{%endfor%}
-										</ul>
-								</div>
-								<h2>Personalization Options</h2>
-								<h4><font color = "blue">{{update_text}}</font></h4>
+							</div>
+							</div>
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2></h2>
+								<h3>Choose Recipes to Ignore</h3>
 								<h5>Want to ignore one of these recipes and remove it from the possible recipe suggestions? </h5>
-								<p>Please list recipe ID's you would like to see removed (separate by commas).</p>
+								<h5>Check the boxes next to the recipes you do not like. We will replace it better recipe option!<br>
+								Based on your user current preferences. We suggest the following Recipes:</h5>
+								<h4><font color = "blue">{{update_text}}</font></h4>
 								<div class="inner">
 									<form method=post action="">
 											{{ ignore_form.ignore_list }}
@@ -97,7 +93,7 @@
 									<h4></h4>
 									<h4></h4>
 									<h3>Replace Ingredients in the Recipe</h3>
-									<h5>Copy and Paste the Recipe Name and we will help suggest a replacement</h5>
+									<h5>Select a recipe and we will help suggest a replacement</h5>
 									<div class="inner">
 										<form method=post action="">
 												<p>{{ form2.recipe_name }} </p>
@@ -106,6 +102,8 @@
 									</div>
 
 									<div class="inner">
+										<h3>Customize Serving Size</h3>
+										<h5>Select a recipe to see the suggested serving size for you!</h5>
 										<form method=post action="">
 												<p>{{ scaleRecipeForm.customizeRecipeName }} </p>
 										<p><input type=submit value="Customize Serving Size in Recipe"></p>
