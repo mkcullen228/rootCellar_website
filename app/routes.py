@@ -9,6 +9,7 @@ from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
 from app.user_profile_support.rootseller import macronutrients
 from app.user_profile_support.rootseller.generate_plotly_plots import *
+from app.user_profile_support.run_pantry_suggestion import *
 # from app.user_profile_support.rootseller import micronutrients
 # import math, json
 # import plotly.plotly as py
@@ -794,6 +795,8 @@ def pantry_recipe():
         if len(pantry_items_list) > 0:
             pantry_exists=True
             # Run pantry suggestion code here
+            # recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
+
             try:
                 recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
 
@@ -806,8 +809,14 @@ def pantry_recipe():
                     recipe_id_suggestion_list.append(recipe_details[itr].get('id'))
                 has_suggestions = True
                 msg = ''
-                session['pantry_recipe_names'] = recipe_name_suggestion_list
-                session['pantry_recipe_ids'] = recipe_id_suggestion_list
+                try:
+                    session['pantry_recipe_names'] = recipe_name_suggestion_list
+                except:
+                    print("Error in saving Pantry Recipe Name")
+                try:
+                    session['pantry_recipe_ids'] = recipe_id_suggestion_list
+                except:
+                    print("Error in saving Recipe Ids")
             except:
                 has_suggestions = False
                 msg = 'We are sorry we did not find a recipe for your pantry. Update pantry and try again'
