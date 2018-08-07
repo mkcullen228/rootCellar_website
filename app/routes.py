@@ -9,7 +9,7 @@ from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
 from app.user_profile_support.rootseller import macronutrients
 from app.user_profile_support.rootseller.generate_plotly_plots import *
-from app.user_profile_support.run_pantry_suggestion import *
+# from app.user_profile_support.run_pantry_suggestion import *
 # from app.user_profile_support.rootseller import micronutrients
 # import math, json
 # import plotly.plotly as py
